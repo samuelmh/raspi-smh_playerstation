@@ -2,8 +2,11 @@
 """Player Station Microservice
 """
 
-from flask import Flask
+
 import logging.config
+
+from flask import Flask
+from flask_cors import CORS
 
 from ..playerstation.playerstation import PlayerStation
 from ..import config
@@ -24,6 +27,7 @@ def init_playerstation():
 def get_app(ps):
     app = Flask(config.APP_NAME)
     app.config.from_object(config)
+    CORS(app)
     try:
         app.config.from_envvar(config.APP_NAME)
     except:

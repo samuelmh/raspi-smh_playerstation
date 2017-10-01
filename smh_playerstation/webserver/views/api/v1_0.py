@@ -5,7 +5,6 @@ import json
 from flask import jsonify, request, send_from_directory, make_response
 
 from .. import status
-# from . decorators.crossdomain import crossdomain
 
 
 class V1_0(object):
@@ -79,7 +78,6 @@ class V1_0(object):
     #
     # # Basic
     #
-    #@crossdomain(origin='*')
     def description_get(self):
         """Show API usage."""
         retval = {
@@ -96,7 +94,6 @@ class V1_0(object):
         }
         return(jsonify(retval), status.OK)
 
-    #@crossdomain(origin='*')
     def status_get(self):
         """Information  of the different components of the smh_playerstation."""
         ps_status = {
@@ -105,7 +102,6 @@ class V1_0(object):
         }
         return(jsonify(ps_status), status.OK)
 
-    #@crossdomain(origin='*')
     def shutdown_get(self):
         """Shutdown (safely) the server."""
         self.ps.stop()
@@ -117,14 +113,12 @@ class V1_0(object):
     #
     # # Songs
     #
-    #@crossdomain(origin='*')
     def songs_get(self):
         """List all the available songs.
         """
         retval = self.ps.songs.songs_list
         return(jsonify(retval), status.OK)
 
-    #@crossdomain(origin='*')
     def songs_scan_get(self):
         """Find new songs in the collection (fast).
         """
@@ -132,7 +126,6 @@ class V1_0(object):
         retval = 'OK'
         return(jsonify(retval), status.OK)
 
-    #@crossdomain(origin='*')
     def songs_rescan_get(self):
         """Re-index the whole collection (slow).
         """
@@ -140,14 +133,12 @@ class V1_0(object):
         retval = 'OK'
         return(jsonify(retval), status.OK)
 
-    #@crossdomain(origin='*')
     def songs_youtube_get(self):
         """List all the Youtube song ids.
         """
         retval = list(self.ps.songs.youtube_ids)
         return(jsonify(retval), status.OK)
 
-    #@crossdomain(origin='*')
     def songs_youtube_download_post(self):
         """Download songs from Youtube and add it to the collection.
         """
@@ -169,14 +160,12 @@ class V1_0(object):
     #
     # # Player
     #
-    #@crossdomain(origin='*')
     def player_get(self):
         """Show the status of the player: playlist, position, mode, etc.
         """
         retval = self.ps.player.status()
         return(jsonify(retval), status.OK)
 
-    #@crossdomain(origin='*')
     def player_playlist(self):
         """Extend or replace the player playlist.
         """
@@ -192,7 +181,6 @@ class V1_0(object):
             self.ps.player.set_list(files=song_ids)
         return(jsonify('OK'), status.OK)
 
-    #@crossdomain(origin='*')
     def player_action_get(self, action):
         """Control the player.
         """
