@@ -65,8 +65,15 @@ class V1_0(object):
                 'view_func': self.player_action_get,
                 'methods': ['GET'],
             },
-
             # Playlists
+            '/playlists': {
+                'view_func': self.playlists_get,
+                'methods': ['GET'],
+            },
+            '/playlists/<playlist_id>': {
+                'view_func': self.playlists_modify,
+                'methods': ['POST', 'DELETE'],
+            },
         }
         for k, v in self.ROUTES.items():
             app.add_url_rule(
@@ -213,7 +220,29 @@ class V1_0(object):
     # # Playlists
     #
 
+    def playlists_get(self):
+        """
+        """
+        return(jsonify(self.ps.playlists.playlists_list), status.OK)
 
+
+    def playlists_modify(self, playlist_id):
+        """
+        POST params:
+            songs: json list of song ids
+        """
+        if request.method == 'DELETE':
+            self.ps.playlists.delete(playlist_id)
+        elif request.method == 'POST':
+            # POST params
+            playlist_songs = json.loads(request.form.get('songs', False))
+            if not playlist_songs:
+                return(
+                    jsonify({'error': 'songs param required.'}),
+                    status.BAD_REQUEST
+                )
+            self.ps.playlists.upsert(playlist_id, playlist_songs)
+        return(jsonify('OK'), status.OK)
 
 
 
