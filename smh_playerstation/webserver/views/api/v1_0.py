@@ -235,8 +235,8 @@ class V1_0(object):
             self.ps.playlists.delete(playlist_id)
         elif request.method == 'POST':
             # POST params
-            playlist_songs = json.loads(request.form.get('songs', False))
-            if not playlist_songs:
+            playlist_songs = request.json.get('songs', False)
+            if playlist_songs==False:
                 return(
                     jsonify({'error': 'songs param required.'}),
                     status.BAD_REQUEST
