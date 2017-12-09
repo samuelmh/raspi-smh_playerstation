@@ -63,7 +63,7 @@ class V1_0(object):
             },
             '/player/action/<action>': {
                 'view_func': self.player_action_get,
-                'methods': ['GET'],
+                'methods': ['POST'],
             },
             # Playlists
             '/playlists': {

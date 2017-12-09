@@ -49,6 +49,26 @@
             </div>
           </div>
         </div>
+        <br/>
+        <ul class="list-group container-fluid list-group-flush" >
+          <draggable :list="playlist" :options="{handle:'.drag-handle'}">
+            <li class="list-group-item" v-for="(song, index) in playlist">
+              <div class="row">
+                <div class="col-1 drag-handle">
+                  <i class="fa fa-arrows-v fa-fw"></i>
+                </div>
+                <div class="col-9">
+                  {{ song }}
+                </div>
+                <div class="col-2">
+                  <button type="button" class="btn btn-link" v-on:click="remove_song(index)"><i class="fa fa-remove fa-fw"></i></button>
+                  <button type="button" class="btn btn-link"><i class="fa fa-hdd-o fa-fw"></i></button>
+                  <button type="button" class="btn btn-link"><i class="fa fa-play-circle fa-fw"></i></button>
+                </div>
+              </div>
+            </li>
+          </draggable>
+        </ul>
       </div>
 
 
@@ -98,11 +118,11 @@
                         <div class="col-2">
                           <button type="button" class="btn btn-link" v-on:click="remove_song(index)"><i class="fa fa-remove fa-fw"></i></button>
                           <button type="button" class="btn btn-link"><i class="fa fa-hdd-o fa-fw"></i></button>
-                          <button type="button" class="btn btn-link"><i class="fa fa-play-circle fa-fw"></i></button>
+                          <button type="button" class="btn btn-link" v-on:click="song_to_player(song)"><i class="fa fa-play-circle fa-fw"></i></button>
                         </div>
                       </div>
                     </li>
-                </draggable>
+                  </draggable>
                 </ul>
               </div>
             </li>
@@ -138,8 +158,8 @@
                 <td class="col-1">{{ entry["LENGTH"] | duration }}</td>
                 <td class="col-5 small">{{ entry["PATH"] }}</td>
                 <td class="col-1">
-                  <button type="button" class="btn btn-link" v-on:click="to_playlist(entry['PATH'])"><i class="fa fa-list fa-fw"></i></button>
-                  <button type="button" class="btn btn-link"><i class="fa fa-play-circle fa-fw"></i></button>
+                  <button type="button" class="btn btn-link" v-on:click="song_to_playlist(entry['PATH'])"><i class="fa fa-list fa-fw"></i></button>
+                  <button type="button" class="btn btn-link" v-on:click="song_to_player(entry['PATH'])"><i class="fa fa-play-circle fa-fw"></i></button>
                 </td>
               </tr>
             </tbody>
@@ -187,6 +207,36 @@
     <script src="static/custom/grid-songs.js"></script>
 
     <script>
+      var player = new Vue({
+        el: '#player',
+        data: {
+          url_api: 'http://localhost:8000/api/v1.0',
+          playlist: [],
+        },
+        methods: {
+          get_player: function(){
+            var self = this;
+            axios.get(self.url_api+'/player')
+              .then(function (response) {
+                console.log("OK: get_player")
+                self.playlist = response.data;
+              })
+              .catch(function (error) {
+                console.log("ERROR: get_player")
+                console.log(error);
+              });
+          },
+          remove_song: function(song_index){
+            var self = this;
+            Vue.delete(self.playlist, song_index);
+          },
+          add_songs: function(songs){
+            this.playlist = this.playlist.concat(songs);
+            //Todo save REST
+          }
+        }
+      });
+
       var playlists = new Vue({
         el: '#playlists',
         data: {
@@ -247,6 +297,9 @@
           remove_song: function(song_index){
             var self = this;
             Vue.delete(self.playlists[self.selected_id], song_index);
+          },
+          song_to_player: function(song_id){
+            player.add_songs([song_id]);
           }
         }
       });

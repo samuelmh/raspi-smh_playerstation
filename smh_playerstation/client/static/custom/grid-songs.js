@@ -52,9 +52,13 @@ Vue.component('demo-grid', {
       this.sortKey = key
       this.sortOrders[key] = this.sortOrders[key] * -1
     },
-    to_playlist: function(song_id){
+    song_to_playlist: function(song_id){
       //Global playlist TODO:change
       playlists.playlists[playlists.selected_id].push(song_id);
+    },
+    song_to_player: function(song_id){
+      //Global playlist TODO:change
+      player.playlist.push(song_id);
     }
   },
 })
