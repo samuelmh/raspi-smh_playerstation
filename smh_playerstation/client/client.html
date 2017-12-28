@@ -32,7 +32,7 @@
     <div class="tab-content">
 
       <!-- MUSIC PLAYER -->
-      <div class="tab-pane active" id="player" role="tabpanel">
+      <!-- <div class="tab-pane active" id="player" role="tabpanel">
         <div class="btn-group" role="group">
           <button type="button" class="btn btn-light"><i class="fa fa-play fa-fw"></i></button>
           <button type="button" class="btn btn-light"><i class="fa fa-step-forward fa-fw"></i></button>
@@ -69,70 +69,12 @@
             </li>
           </draggable>
         </ul>
-      </div>
-
-
-
-
-
+      </div> -->
 
       <!-- PLAYLISTS -->
       <div class="tab-pane" id="playlists" role="tabpanel">
-
-        <div id="playlists" class="container-fluid ">
-          <br/>
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item" v-for="(songs, id) in playlists" >
-              <div class="row">
-                <button class="btn btn-light col-9" v-on:click="selected_id = id">{{ id }}</button>
-                <div class="col-3">
-                  <button type="button" class="btn btn-light"><i class="fa fa-hdd-o fa-fw"></i></button>
-                  <button type="button" class="btn btn-light"><i class="fa fa-play-circle fa-fw"></i></button>
-                </div>
-              </div>
-              <br/>
-
-              <div v-bind:class="{ 'collapse': selected_id!=id}">
-                <form>
-                  <div class="form-row">
-                    <div class="col-10">
-                      <input type="text" class="form-control" v-model="id" name="id">
-                    </div>
-                    <div class="col-2">
-                      <button type="button" class="btn btn-success" v-on:click="upsert_playlist(id)"><i class="fa fa-floppy-o"> Save</i></button>
-                      <button type="button" class="btn btn-danger" v-on:click="delete_playlist()"><i class="fa fa-trash"></i> Delete</button>
-                    </div>
-                  </div>
-                </form>
-
-                <ul class="list-group container-fluid list-group-flush" >
-                  <draggable :list="songs" :options="{handle:'.drag-handle'}">
-                    <li class="list-group-item" v-for="(song, index) in songs">
-                      <div class="row">
-                        <div class="col-1 drag-handle">
-                          <i class="fa fa-arrows-v fa-fw"></i>
-                        </div>
-                        <div class="col-9">
-                          {{ song }}
-                        </div>
-                        <div class="col-2">
-                          <button type="button" class="btn btn-link" v-on:click="remove_song(index)"><i class="fa fa-remove fa-fw"></i></button>
-                          <button type="button" class="btn btn-link"><i class="fa fa-hdd-o fa-fw"></i></button>
-                          <button type="button" class="btn btn-link" v-on:click="song_to_player(song)"><i class="fa fa-play-circle fa-fw"></i></button>
-                        </div>
-                      </div>
-                    </li>
-                  </draggable>
-                </ul>
-              </div>
-            </li>
-          </ul>
-        </div>
-
+        <smh-playlists></smh-playlists>
       </div>
-
-
-
 
 
 
@@ -206,140 +148,83 @@
     <!-- Custom -->
     <script src="static/custom/grid-songs.js"></script>
 
+    <script src="static/smh_playerstation/playlists.js"></script>
+
     <script>
-      var player = new Vue({
-        el: '#player',
-        data: {
-          url_api: 'http://localhost:8000/api/v1.0',
-          playlist: [],
-        },
-        methods: {
-          get_player: function(){
-            var self = this;
-            axios.get(self.url_api+'/player')
-              .then(function (response) {
-                console.log("OK: get_player")
-                self.playlist = response.data;
-              })
-              .catch(function (error) {
-                console.log("ERROR: get_player")
-                console.log(error);
-              });
-          },
-          remove_song: function(song_index){
-            var self = this;
-            Vue.delete(self.playlist, song_index);
-          },
-          add_songs: function(songs){
-            this.playlist = this.playlist.concat(songs);
-            //Todo save REST
-          }
-        }
+
+      var root = new Vue({
+        el: '#playlists'
       });
 
-      var playlists = new Vue({
-        el: '#playlists',
-        data: {
-          url_api: 'http://localhost:8000/api/v1.0',
-          playlists: {},
-          selected_id: "",
-        },
-        methods: {
-          get_playlists: function(){
-            var self = this;
-            axios.get(self.url_api+'/playlists')
-              .then(function (response) {
-                console.log("OK: get_playlists")
-                self.playlists = response.data;
-                self.selected_id = 'tmp';
-                // Create temporal playlist
-                if (!self.playlists['tmp']){
-                  Vue.set(self.playlists, 'tmp', []);  // Reactivity
-                }
-              })
-              .catch(function (error) {
-                console.log("ERROR: get_playlists")
-                console.log(error);
-              });
-          },
-          delete_playlist: function(){
-            var self = this;
-            var playlist_id =  self.selected_id;
-            console.log("delete_playlist "+playlist_id);
-            axios.delete(self.url_api+'/playlists/'+playlist_id)
-              .then(function (response) {
-                  console.log("OK: delete_playlist");
-                  Vue.delete(self.playlists, playlist_id);  // Reactivity
-                  if (playlist_id=="tmp"){
-                    Vue.set(self.playlists, 'tmp', []);  // Reactivity
-                  }
-              })
-              .catch(function (error) {
-                console.log("ERROR: delete_playlist");
-                console.log(error);
-              });
-          },
-          upsert_playlist: function(playlist_id){
-            var self = this;
-            var songs = self.playlists[self.selected_id];
-            console.log("upsert_playlist "+playlist_id);
-            axios.post(self.url_api+'/playlists/'+playlist_id, {songs: songs})
-              .then(function (response) {
-                console.log("OK: upsert_playlist");
-                Vue.set(self.playlists, playlist_id, songs);  //Changes in DOM
-                self.selected_id = playlist_id;  //Move to new playlist
-              })
-              .catch(function (error) {
-                console.log("ERROR: upsert_playlist");
-                console.log(error);
-              });
-          },
-          remove_song: function(song_index){
-            var self = this;
-            Vue.delete(self.playlists[self.selected_id], song_index);
-          },
-          song_to_player: function(song_id){
-            player.add_songs([song_id]);
-          }
-        }
-      });
 
-      // Songs component
-      var songs = new Vue({
-        el: '#grid-songs',
-        data: {
-          url_api: 'http://localhost:8000/api/v1.0',
-          searchQuery: '',
-          columns: ['TITLE','LENGTH', 'PATH'],
-          songs: [],
-          songs_index: {}
-        },
-        methods: {
-          _filter_title: function(path_file){
-        		var elems = path_file.split("/").pop().split("-")
-        		elems.pop()
-        		return elems.join()
-          },
-          get_songs: function(){
-            var self = this;
-            axios.get(self.url_api+'/songs')
-              .then(function (response) {
-                self.songs_index = {};
-                self.songs = Object.keys(response.data).map(
-                  function(key){
-                    response.data[key]['TITLE'] = self._filter_title(response.data[key]['PATH']);
-                    self.songs_index[key] = response.data[key];
-                    return response.data[key];
-                  }
-                );
-              })
-              .catch(function (error) {
-                console.log("ERROR: get_songs")
-                console.log(error);
-              });
-          }
-        }
-      });
+      // var player = new Vue({
+      //   el: '#player',
+      //   data: {
+      //     url_api: 'http://localhost:8000/api/v1.0',
+      //     playlist: [],
+      //   },
+      //   methods: {
+      //     get_player: function(){
+      //       var self = this;
+      //       axios.get(self.url_api+'/player')
+      //         .then(function (response) {
+      //           console.log("OK: get_player")
+      //           self.playlist = response.data;
+      //         })
+      //         .catch(function (error) {
+      //           console.log("ERROR: get_player")
+      //           console.log(error);
+      //         });
+      //     },
+      //     remove_song: function(song_index){
+      //       var self = this;
+      //       Vue.delete(self.playlist, song_index);
+      //     },
+      //     add_songs: function(songs){
+      //       this.playlist = this.playlist.concat(songs);
+      //       //Todo save REST
+      //     }
+      //   }
+      // });
+      //
+      //
+      //
+      // // Songs component
+      // var songs = new Vue({
+      //   el: '#grid-songs',
+      //   data: {
+      //     url_api: 'http://localhost:8000/api/v1.0',
+      //     searchQuery: '',
+      //     columns: ['TITLE','LENGTH', 'PATH'],
+      //     songs: [],
+      //     songs_index: {}
+      //   },
+      //   methods: {
+      //     _filter_title: function(path_file){
+      //   		var elems = path_file.split("/").pop().split("-")
+      //   		elems.pop()
+      //   		return elems.join()
+      //     },
+      //     get_songs: function(){
+      //       var self = this;
+      //       axios.get(self.url_api+'/songs')
+      //         .then(function (response) {
+      //           self.songs_index = {};
+      //           self.songs = Object.keys(response.data).map(
+      //             function(key){
+      //               response.data[key]['TITLE'] = self._filter_title(response.data[key]['PATH']);
+      //               self.songs_index[key] = response.data[key];
+      //               return response.data[key];
+      //             }
+      //           );
+      //         })
+      //         .catch(function (error) {
+      //           console.log("ERROR: get_songs")
+      //           console.log(error);
+      //         });
+      //     }
+      //   }
+      // });
 
     </script>
 
