@@ -15,6 +15,7 @@
   <body>
     <h1>SMH Player Station</h1>
 
+
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
       <li class="nav-item">
@@ -26,115 +27,81 @@
       <li class="nav-item">
         <a class="nav-link" data-toggle="tab" href="#songs" role="tab"><i class="fa fa-music fa-fw"></i> Songs</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#ytb" role="tab"><i class="fa fa-youtube fa-fw"></i> Download</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#encoder" role="tab"><i class="fa fa-hdd-o fa-fw"></i> Encoder</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#settings" role="tab"><i class="fa fa-cogs fa-fw"></i> Settings</a>
+      </li>
     </ul>
 
     <!-- Tab panes -->
-    <div class="tab-content">
+    <div class="tab-content" id="smh_playerstation">
 
-      <!-- MUSIC PLAYER -->
-      <!-- <div class="tab-pane active" id="player" role="tabpanel">
-        <div class="btn-group" role="group">
-          <button type="button" class="btn btn-light"><i class="fa fa-play fa-fw"></i></button>
-          <button type="button" class="btn btn-light"><i class="fa fa-step-forward fa-fw"></i></button>
-          <button type="button" class="btn btn-light"><i class="fa fa-stop fa-fw"></i></button>
-          <div class="btn-group" role="group">
-            <button id="btnGroupDrop1" type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Mode
-            </button>
-            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-              <a class="dropdown-item" href="#"><i class="fa fa-list fa-fw"></i> List</a>
-              <a class="dropdown-item" href="#"><i class="fa fa-repeat fa-fw"></i> Repeat list</a>
-              <a class="dropdown-item" href="#"><i class="fa fa-random fa-fw"></i> Random</a>
-                <a class="dropdown-item" href="#"><i class="fa fa-file-o fa-fw"></i> Repeat song</a>
-            </div>
-          </div>
-        </div>
-        <br/>
-        <ul class="list-group container-fluid list-group-flush" >
-          <draggable :list="playlist" :options="{handle:'.drag-handle'}">
-            <li class="list-group-item" v-for="(song, index) in playlist">
-              <div class="row">
-                <div class="col-1 drag-handle">
-                  <i class="fa fa-arrows-v fa-fw"></i>
-                </div>
-                <div class="col-9">
-                  {{ song }}
-                </div>
-                <div class="col-2">
-                  <button type="button" class="btn btn-link" v-on:click="remove_song(index)"><i class="fa fa-remove fa-fw"></i></button>
-                  <button type="button" class="btn btn-link"><i class="fa fa-hdd-o fa-fw"></i></button>
-                  <button type="button" class="btn btn-link"><i class="fa fa-play-circle fa-fw"></i></button>
-                </div>
-              </div>
-            </li>
-          </draggable>
-        </ul>
-      </div> -->
+      <!-- PLAYER -->
+      <div class="tab-pane active" role="tabpanel" id="player">
+      	<br/>
+        <smh-playerstation-player
+          v-bind:player="player"
+          v-on:player_remove_song="player_remove_song"
+          v-on:player_action="player_action"
+          v-on:player_mode="player_mode"
+          v-on:drag_update="player_playlist_upsert"
+        >
+        </smh-playerstation-player>
+
+      </div>
 
       <!-- PLAYLISTS -->
-      <div class="tab-pane" id="playlists" role="tabpanel">
-        <smh-playlists></smh-playlists>
+      <div class="tab-pane" role="tabpanel" id="playlists" >
+      	<br/>
+        <smh-playerstation-playlists
+          v-bind:playlists="playlists"
+          v-bind:playlist_selected_id="playlist_selected_id"
+          v-on:playlist_set_selected="playlist_set_selected"
+          v-on:playlist_upsert="playlist_upsert"
+          v-on:playlist_delete="playlist_delete"
+          v-on:playlist_remove_song="playlist_remove_song"
+          v-on:player_add_songs="player_add_songs"
+        >
+        </smh-playerstation-playlists>
       </div>
-
-
 
       <!-- SONGS -->
-      <div class="tab-pane" id="songs" role="tabpanel">
-        <!-- component template -->
-        <script type="text/x-template" id="template-grid-songs">
-          <table class="table">
-            <thead>
-              <tr class="row" >
-                <th v-for="key in columns" :class="{ 'col-5':key=='TITLE' || key=='PATH', 'col-1':key=='LENGTH' }" >
-                  <button type="button" @click="sortBy(key)" class="btn" :class="{ 'btn-secondary': sortKey == key,  'btn-link': sortKey != key}">
-                    {{ key }}
-                    <span class="fa fa-fw" :class="sortOrders[key] > 0 ? 'fa-sort-asc' : 'fa-sort-desc'"></span>
-                  </button>
-                </th>
-                <th class="col-1"><!-- Actions --></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="row" v-for="entry in filteredData">
-                <td class="col-5">{{ entry["TITLE"] }}</td>
-                <td class="col-1">{{ entry["LENGTH"] | duration }}</td>
-                <td class="col-5 small">{{ entry["PATH"] }}</td>
-                <td class="col-1">
-                  <button type="button" class="btn btn-link" v-on:click="song_to_playlist(entry['PATH'])"><i class="fa fa-list fa-fw"></i></button>
-                  <button type="button" class="btn btn-link" v-on:click="song_to_player(entry['PATH'])"><i class="fa fa-play-circle fa-fw"></i></button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </script>
-
-        <!-- demo root element -->
-        <div id="grid-songs" class="container-fluid ">
-          <br/>
-          <form class="container">
-            <div class="form-group row">
-              <div class="col-1">
-                <label class="col-form-label font-weight-bold">Search</label>
-              </div>
-              <div class="col-10">
-                <input name="query" class="form-control" v-model="searchQuery" />
-              </div>
-              <div class="col-1">
-                  <button class="btn btn-light" v-if="searchQuery" v-on:click="searchQuery=''"><i class="fa fa-times fa-fw"></i></button>
-              </div>
-            </div>
-          </form>
-          <demo-grid :data="songs" :columns="columns" :filter-key="searchQuery"></demo-grid>
-        </div>
+      <div class="tab-pane" role="tabpanel" id="songs">
+      	<br/>
+        <smh-playerstation-songs
+          v-bind:songs="songs"
+          v-on:playlist_add_song="playlist_add_song"
+          v-on:player_add_songs="player_add_songs"
+        >
+        </smh-playerstation-songs>
       </div>
 
+      <!-- YOUTUBE DOWNLOADER -->
+      <div class="tab-pane" role="tabpanel" id="ytb">
+        ytb
+      	<br/>
+      </div>
+
+      <!-- ENCODER -->
+      <div class="tab-pane" role="tabpanel" id="encoder">
+        encoder
+      	<br/>
+      </div>
+
+      <!-- SETTTINGS -->
+      <div class="tab-pane" role="tabpanel" id="settings">
+        settings
+      	<br/>
+      </div>
 
     </div>
 
-
-
     <!-- Bootstrap -->
-    <!-- TODO: DElete jquery, clash with vue ¿rewrite tabs? -->
     <script src="static/jquery/jquery-3.2.1.slim.min.js"></script>
     <script src="static/popper.js/1.11.0/popper.min.js"></script>
     <script src="static/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
@@ -146,88 +113,18 @@
     <script src="static/vue/vuedraggable-2.14.1.min.js"></script>
 
     <!-- Custom -->
-    <script src="static/custom/grid-songs.js"></script>
-
+    <script src="static/smh_playerstation/player.js"></script>
     <script src="static/smh_playerstation/playlists.js"></script>
+    <script src="static/smh_playerstation/songs.js"></script>
+    <!-- Root element -->
+    <script src="static/smh_playerstation/main.js"></script>
+
 
     <script>
-
-      var root = new Vue({
-        el: '#playlists'
-      });
-
-
-      // var player = new Vue({
-      //   el: '#player',
-      //   data: {
-      //     url_api: 'http://localhost:8000/api/v1.0',
-      //     playlist: [],
-      //   },
-      //   methods: {
-      //     get_player: function(){
-      //       var self = this;
-      //       axios.get(self.url_api+'/player')
-      //         .then(function (response) {
-      //           console.log("OK: get_player")
-      //           self.playlist = response.data;
-      //         })
-      //         .catch(function (error) {
-      //           console.log("ERROR: get_player")
-      //           console.log(error);
-      //         });
-      //     },
-      //     remove_song: function(song_index){
-      //       var self = this;
-      //       Vue.delete(self.playlist, song_index);
-      //     },
-      //     add_songs: function(songs){
-      //       this.playlist = this.playlist.concat(songs);
-      //       //Todo save REST
-      //     }
-      //   }
-      // });
-      //
-      //
-      //
-      // // Songs component
-      // var songs = new Vue({
-      //   el: '#grid-songs',
-      //   data: {
-      //     url_api: 'http://localhost:8000/api/v1.0',
-      //     searchQuery: '',
-      //     columns: ['TITLE','LENGTH', 'PATH'],
-      //     songs: [],
-      //     songs_index: {}
-      //   },
-      //   methods: {
-      //     _filter_title: function(path_file){
-      //   		var elems = path_file.split("/").pop().split("-")
-      //   		elems.pop()
-      //   		return elems.join()
-      //     },
-      //     get_songs: function(){
-      //       var self = this;
-      //       axios.get(self.url_api+'/songs')
-      //         .then(function (response) {
-      //           self.songs_index = {};
-      //           self.songs = Object.keys(response.data).map(
-      //             function(key){
-      //               response.data[key]['TITLE'] = self._filter_title(response.data[key]['PATH']);
-      //               self.songs_index[key] = response.data[key];
-      //               return response.data[key];
-      //             }
-      //           );
-      //         })
-      //         .catch(function (error) {
-      //           console.log("ERROR: get_songs")
-      //           console.log(error);
-      //         });
-      //     }
-      //   }
-      // });
-
+      smh_playerstation.songs_get();
+      smh_playerstation.playlists_get();
+      smh_playerstation.player_get();
     </script>
-
 
 
   </body>
