@@ -176,7 +176,7 @@ class V1_0(object):
     def player_playlist(self):
         """Extend or replace the player playlist.
         """
-        song_ids = json.loads(request.form.get('song_ids'))
+        song_ids = request.json.get('song_ids', False)
         if not song_ids:
             return(
                 jsonify({'error': 'song_ids param required.'}),
