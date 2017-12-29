@@ -188,7 +188,7 @@ class Player(object):
         retval = {
             'mode': self.MODES_INV[self.mode],
             'playlist': self.playlist,
-            'positon': self.playlist_id,
+            'position': self.playlist_id,
             'playing_time': -1
         }
         if self.is_playing:
