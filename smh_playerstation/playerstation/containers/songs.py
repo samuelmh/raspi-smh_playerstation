@@ -31,10 +31,12 @@ class Songs:
         if path_song not in self.songs_list:
             song_abspath = os.path.join(self.PATH_SONGS, path_song)
             song = song_utils.analyze(path_song, song_abspath)
+            # Song structure as it came from the DB
+            song_db_like = {path_song: {k.upper():v for k,v in song.items() if k in ('path', 'length', 'extension', 'source')} }
             self.w_db.put_element(
                 sql.SONGS_CREATE,
                 song,
-                lambda _,e: self.songs_list.update({path_song: song}) if not e else None
+                lambda _,e: self.songs_list.update(song_db_like) if not e else None
             )
             if song['source'] == 'youtube':
                 self.w_db.put_element(
