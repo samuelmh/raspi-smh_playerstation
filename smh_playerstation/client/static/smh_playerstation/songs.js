@@ -11,7 +11,7 @@ var songs_template = `
 					<input name="query" class="form-control" v-model="searchQuery" />
 				</div>
 				<div class="col-1">
-						<button class="btn btn-light" v-if="searchQuery" v-on:click="searchQuery=''"><i class="fa fa-times fa-fw"></i></button>
+						<button type="button" class="btn btn-light" v-if="searchQuery" v-on:click="searchQuery=''"><i class="fa fa-times fa-fw"></i></button>
 				</div>
 			</div>
 		</form>
@@ -30,7 +30,7 @@ var songs_template = `
 			<tbody>
 				<tr class="row" v-for="entry in filteredSongs">
 					<td class="col-5">{{ entry["TITLE"] }}</td>
-					<td class="col-1">{{ entry["LENGTH"] | duration }}</td>
+					<td class="col-1">{{ entry["LENGTH_HMS"] }}</td>
 					<td class="col-5 small">{{ entry["PATH"] }}</td>
 					<td class="col-1">
 						<button type="button" class="btn btn-link" v-on:click="playlist_add_song(entry['PATH'])"><i class="fa fa-list fa-fw"></i></button>
@@ -81,13 +81,6 @@ Vue.component('smh-playerstation-songs', {
 				})
 			}
 			return songs
-		}
-	},
-	filters: {
-		duration: function (seconds){
-			function pad(num, size){ return ('00' + num).substr(-size); }
-			seconds = Number(seconds)
-			return Math.floor(seconds/3600) + ":" + pad(Math.floor((seconds%3600)/60),2) + ":" + pad(Math.floor(seconds%60),2)
 		}
 	},
 	methods: {

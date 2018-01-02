@@ -17,7 +17,7 @@
 
 
     <!-- Nav tabs -->
-    <ul class="nav nav-tabs" role="tablist">
+    <ul class="nav nav-tabs" role="tablist" id="tabs">
       <li class="nav-item">
         <a class="nav-link active" data-toggle="tab" href="#player" role="tab"><i class="fa fa-play-circle fa-fw"></i> Player</a>
       </li>
@@ -83,8 +83,12 @@
 
       <!-- YOUTUBE DOWNLOADER -->
       <div class="tab-pane" role="tabpanel" id="ytb">
-        ytb
       	<br/>
+        <smh-playerstation-download_ytb
+          v-bind:url_api="url_api"
+          v-on:downloading="to_status"
+        >
+        </smh-playerstation-download_ytb>
       </div>
 
       <!-- ENCODER -->
@@ -95,8 +99,15 @@
 
       <!-- SETTTINGS -->
       <div class="tab-pane" role="tabpanel" id="settings">
-        settings
       	<br/>
+        <smh-playerstation-settings
+          v-bind:status="status"
+          v-bind:url_api="url_api"
+          v-on:songs_scan="songs_scan"
+          v-on:songs_rescan="songs_rescan"
+          v-on:url_api_set="url_api_set"
+        >
+        </smh-playerstation-settings>
       </div>
 
     </div>
@@ -116,14 +127,14 @@
     <script src="static/smh_playerstation/player.js"></script>
     <script src="static/smh_playerstation/playlists.js"></script>
     <script src="static/smh_playerstation/songs.js"></script>
+    <script src="static/smh_playerstation/download_ytb.js"></script>
+    <script src="static/smh_playerstation/settings.js"></script>
     <!-- Root element -->
     <script src="static/smh_playerstation/main.js"></script>
 
 
     <script>
-      smh_playerstation.songs_get();
-      smh_playerstation.playlists_get();
-      smh_playerstation.player_get();
+      smh_playerstation.status_get();
     </script>
 
 

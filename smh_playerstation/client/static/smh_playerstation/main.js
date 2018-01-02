@@ -8,7 +8,8 @@ var smh_playerstation = new Vue({
 			playlist_selected_id: "tmp",
 	    songs: [],  //Tuples of songs
 			songs_index: {},  // Index over the songs titles
-			player: {mode:'LIST', playlist:[]}  // Don't bind an empty playlist
+			player: {mode:'LIST', playlist:[]},  // Don't bind an empty playlist
+			status: {}
 	  },
   methods: {
 
@@ -18,6 +19,11 @@ var smh_playerstation = new Vue({
   		elems.pop();
   		return elems.join();
     },
+		song_filter_length: function (seconds){
+			function pad(num, size){ return ('00' + num).substr(-size); }
+			seconds = Number(seconds)
+			return Math.floor(seconds/3600) + ":" + pad(Math.floor((seconds%3600)/60),2) + ":" + pad(Math.floor(seconds%60),2)
+		},
 
 
     //
@@ -32,16 +38,41 @@ var smh_playerstation = new Vue({
           self.songs = Object.keys(response.data).map(
             function(key){
               response.data[key]['TITLE'] = self.song_filter_title(response.data[key]['PATH']);
+							response.data[key]['LENGTH_HMS'] = self.song_filter_length(response.data[key]['LENGTH']);
               self.songs_index[key] = response.data[key];
               return response.data[key];
             }
           );
         })
         .catch(function (error) {
-          console.log("ERROR: get_songs");
+          console.log("ERROR: songs_get");
           console.log(error);
         });
     },
+		songs_scan: function(){
+      var self = this;
+      axios.get(self.url_api+'/songs/scan')
+        .then(function (response) {
+					console.log("OK: songs_scan");
+					self.to_status();
+        })
+        .catch(function (error) {
+          console.log("ERROR: songs_scan");
+          console.log(error);
+        });
+		},
+		songs_rescan: function(){
+      var self = this;
+      axios.get(self.url_api+'/songs/rescan')
+        .then(function (response) {
+					console.log("OK: songs_rescan");
+					self.to_status();
+        })
+        .catch(function (error) {
+          console.log("ERROR: songs_rescan");
+          console.log(error);
+        });
+		},
 
 
     //
@@ -115,6 +146,11 @@ var smh_playerstation = new Vue({
 	      .then(function (response) {
 	        console.log("OK: player_get");
 	        self.player = response.data;
+					if (self.player["playing_time"]!=-1) {
+						// TODO: interface timer is better
+						// playing time, song time,
+						// setTimeout(self.player_get, 1000);  // If playing update status
+					}
 	      })
 	      .catch(function (error) {
 	        console.log("ERROR: player_get");
@@ -145,6 +181,7 @@ var smh_playerstation = new Vue({
 	    axios.post(self.url_api+'/player/action/'+action)
 	      .then(function (response) {
 	        console.log("OK: player_action");
+					self.player_get();
 	      })
 	      .catch(function (error) {
 	        console.log("ERROR: player_action");
@@ -163,7 +200,51 @@ var smh_playerstation = new Vue({
 	        console.log(error);
 	      });
 
-		}
-	},
+		},
+
+
+		//
+		//==> OTHERS
+		//
+		to_status: function(){
+			$('#tabs a[href="#settings"]').tab('show');  // See workers
+			setTimeout(self.status_get, 3000);
+		},
+		update_data: function(){
+			smh_playerstation.songs_get();
+      smh_playerstation.playlists_get();
+      smh_playerstation.player_get();
+		},
+		url_api_set: function(url_api){
+			this.url_api = url_api;
+		},
+		status_get: function(){ //Update the workers status until queues==0
+	    var self = this;
+	    axios.get(self.url_api+'/status')
+	      .then(function (response) {
+	        console.log("OK: status_get");
+	        self.status = response.data;
+					var workers = self.status.workers;
+					var repeat = false;
+					for (var worker in workers) {
+		  			if (workers[worker]['queue_size']>0){
+							repeat = true;
+							break;
+						}
+					}
+					if (repeat){
+						setTimeout(self.status_get, 1000);
+					} else {  //Update playlists/songs
+						self.update_data();
+					}
+	      })
+	      .catch(function (error) {
+	        console.log("ERROR: status_get");
+	        console.log(error);
+					setTimeout(self.status_get, 3000);
+	      });
+		},
+},
+
 
 });

@@ -1,9 +1,14 @@
 var player_template = `
 <div class="container-fluid ">
+	<!-- PLAYER -->
 	<div class="btn-group" role="group">
-		<button type="button" class="btn btn-light" v-on:click="player_action('play')"><i class="fa fa-play fa-fw"></i></button>
+		<div v-if="player.playing_time==-1">
+			<button type="button" class="btn btn-light" v-on:click="player_action('play')"><i class="fa fa-play fa-fw"></i></button>
+		</div>
+		<div v-else>
+			<button type="button" class="btn btn-light" v-on:click="player_action('stop')"><i class="fa fa-stop fa-fw"></i></button>
+		</div>
 		<button type="button" class="btn btn-light" v-on:click="player_action('play_next')"><i class="fa fa-step-forward fa-fw"></i></button>
-		<button type="button" class="btn btn-light" v-on:click="player_action('stop')"><i class="fa fa-stop fa-fw"></i></button>
 		<div class="btn-group" role="group">
 			<button id="btnGroupDrop1" type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 				Mode <i class="fa fa-fw" :class="{ 'fa-list':player.mode=='LIST', 'fa-repeat':player.mode=='REPEAT_LIST', 'fa-random':player.mode=='RANDOM', 'fa-file-o':player.mode=='REPEAT_FILE'}"></i>
@@ -17,9 +22,10 @@ var player_template = `
 		</div>
 	</div>
 	<br/>
+	<!-- PLAYLIST -->
 	<ul class="list-group container-fluid list-group-flush" >
 		<draggable :list="player.playlist" :options="{handle:'.drag-handle'}" v-on:end="drag_update">
-			<li class="list-group-item" v-for="(song, index) in player.playlist">
+			<li class="list-group-item" :class="{ 'bg-warning': player.position==index }" v-for="(song, index) in player.playlist">
 				<div class="row">
 					<div class="col-1 drag-handle">
 						<i class="fa fa-arrows-v fa-fw"></i>
@@ -29,7 +35,6 @@ var player_template = `
 					</div>
 					<div class="col-2">
 						<button type="button" class="btn btn-link" v-on:click="player_remove_song(index)"><i class="fa fa-remove fa-fw"></i></button>
-						<button type="button" class="btn btn-link"><i class="fa fa-hdd-o fa-fw"></i></button>
 						<button type="button" class="btn btn-link"><i class="fa fa-play-circle fa-fw"></i></button>
 					</div>
 				</div>

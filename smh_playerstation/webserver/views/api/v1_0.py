@@ -150,14 +150,14 @@ class V1_0(object):
         """Download songs from Youtube and add it to the collection.
         """
         # POST params
-        youtube_ids = request.form.get('youtube_ids').split()
-        path = request.form.get('path', '')
+        youtube_ids = request.json.get('youtube_ids')
+        path = request.json.get('path', '')
         if not youtube_ids:
             return(
                 jsonify({'error': 'youtube_id param required.'}),
                 status.BAD_REQUEST
             )
-        for youtube_id in youtube_ids:
+        for youtube_id in youtube_ids.split():
             self.ps.songs.download_from_youtube(
                 youtube_id=youtube_id,
                 path=path
