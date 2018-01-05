@@ -48,6 +48,10 @@ class V1_0(object):
                 'view_func': self.songs_youtube_download_post,
                 'methods': ['POST'],
             },
+            '/songs/encode': {
+                'view_func': self.songs_encode,
+                'methods': ['POST'],
+            },
             # Player
             '/player': {
                 'view_func': self.player_get,
@@ -162,6 +166,29 @@ class V1_0(object):
                 youtube_id=youtube_id,
                 path=path
             )
+        return(jsonify('OK'), status.OK)
+
+    def songs_encode(self):
+        """Encode songs into mp3 files.
+        Parameters
+        ----------
+        song_ids: list of song identifiers to encode
+        path (optional): str path of the mp3 directory
+        bitrate (optional): int quality in kbps 245, 225, 190, 175, 165, 130, 115, 100, 85, 65
+        mono (optional): bool if out file should be mono or stereo
+        """
+        # POST params
+        song_ids = request.json.get('song_ids')
+        if not song_ids:
+            return(
+                jsonify({'error': 'song_ids param required.'}),
+                status.BAD_REQUEST
+            )
+        path = request.json.get('path', '')
+        bitrate = int(request.json.get('bitrate', 245))
+        mono = request.json.get('mono', False)
+        for path_song in song_ids:
+            self.ps.songs.encode(path_song, path, bitrate, mono)
         return(jsonify('OK'), status.OK)
 
     #

@@ -5,7 +5,7 @@ var playlists_template = `
 			<div class="row">
 				<button class="btn btn-light col-9" v-on:click="playlist_set_selected(id)">{{ id }}</button>
 				<div class="col-3">
-					<button type="button" class="btn btn-light"><i class="fa fa-hdd-o fa-fw"></i></button>
+					<button type="button" class="btn btn-light" v-on:click="encoder_add_songs_playlist(id)"><i class="fa fa-hdd-o fa-fw"></i></button>
 					<button type="button" class="btn btn-light" v-on:click="player_add_songs_playlist(id)"><i class="fa fa-play-circle fa-fw"></i></button>
 				</div>
 			</div>
@@ -36,7 +36,7 @@ var playlists_template = `
 								</div>
 								<div class="col-2">
 									<button type="button" class="btn btn-link" v-on:click="remove_song(index)"><i class="fa fa-remove fa-fw"></i></button>
-									<button type="button" class="btn btn-link"><i class="fa fa-hdd-o fa-fw"></i></button>
+									<button type="button" class="btn btn-link" v-on:click="encoder_add_song(song)"><i class="fa fa-hdd-o fa-fw"></i></button>
 									<button type="button" class="btn btn-link" v-on:click="player_add_song(song)"><i class="fa fa-play-circle fa-fw"></i></button>
 								</div>
 							</div>
@@ -66,11 +66,20 @@ Vue.component('smh-playerstation-playlists', {
 		remove_song: function(song_index){
 			this.$emit('playlist_remove_song', song_index);
 		},
+		// To player
 		player_add_song: function(song_id){
 			this.$emit('player_add_songs', [song_id]);
 		},
 		player_add_songs_playlist: function(playlist_id){
 			this.$emit('player_add_songs', this.playlists[playlist_id]);
+		},
+		// To encoder
+		encoder_add_song: function(song_id){
+			this.$emit('encoder_add_songs', [song_id]);
+		},
+		encoder_add_songs_playlist: function(playlist_id){
+			this.$emit('encoder_set_path', playlist_id);
+			this.$emit('encoder_add_songs', this.playlists[playlist_id]);
 		}
 	}
 });

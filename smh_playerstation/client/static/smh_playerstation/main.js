@@ -9,7 +9,9 @@ var smh_playerstation = new Vue({
 	    songs: [],  //Tuples of songs
 			songs_index: {},  // Index over the songs titles
 			player: {mode:'LIST', playlist:[]},  // Don't bind an empty playlist
-			status: {}
+			status: {},
+			encoder_songs: [],
+			encoder_path: ''
 	  },
   methods: {
 
@@ -72,6 +74,40 @@ var smh_playerstation = new Vue({
           console.log("ERROR: songs_rescan");
           console.log(error);
         });
+		},
+
+		// ENCODER
+		encoder_encode: function(bitrate, mono){
+			console.log(bitrate);
+			console.log(mono);
+			console.log(this.encoder_path);
+			var self = this;
+      axios.post(
+				self.url_api+'/songs/encode',
+				{
+					song_ids: self.encoder_songs,
+					path: self.encoder_path,
+					bitrate: bitrate,
+					mono: mono
+				}
+			).then(function (response) {
+				console.log("OK: encoder_encode");
+				self.to_status();
+				self.encoder_songs = [];
+      }).catch(function (error) {
+        console.log("ERROR: encoder_encode");
+        console.log(error);
+      });
+		},
+		encoder_add_songs: function(song_ids){
+			this.encoder_songs = this.encoder_songs.concat(song_ids);
+		},
+		encoder_remove_song: function(song_index){
+			Vue.delete(this.encoder_songs, song_index);
+		},
+		encoder_set_path: function(path){
+			this.encoder_path = path;
+			this.to_encoder();
 		},
 
 
@@ -206,6 +242,9 @@ var smh_playerstation = new Vue({
 		//
 		//==> OTHERS
 		//
+		to_encoder:function(){
+			$('#tabs a[href="#encoder"]').tab('show');  // See workers
+		},
 		to_status: function(){
 			$('#tabs a[href="#settings"]').tab('show');  // See workers
 			setTimeout(self.status_get, 3000);

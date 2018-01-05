@@ -66,6 +66,8 @@
           v-on:playlist_delete="playlist_delete"
           v-on:playlist_remove_song="playlist_remove_song"
           v-on:player_add_songs="player_add_songs"
+          v-on:encoder_add_songs="encoder_add_songs"
+          v-on:encoder_set_path="encoder_set_path"
         >
         </smh-playerstation-playlists>
       </div>
@@ -93,8 +95,15 @@
 
       <!-- ENCODER -->
       <div class="tab-pane" role="tabpanel" id="encoder">
-        encoder
       	<br/>
+        <smh-playerstation-encoder
+          v-bind:song_ids="encoder_songs"
+          v-bind:path="encoder_path"
+          v-on:add_songs="encoder_add_songs"
+          v-on:remove_song="encoder_remove_song"
+          v-on:encoder_encode="encoder_encode"
+        >
+      </smh-playerstation-encoder>
       </div>
 
       <!-- SETTTINGS -->
@@ -128,6 +137,7 @@
     <script src="static/smh_playerstation/playlists.js"></script>
     <script src="static/smh_playerstation/songs.js"></script>
     <script src="static/smh_playerstation/download_ytb.js"></script>
+    <script src="static/smh_playerstation/encoder.js"></script>
     <script src="static/smh_playerstation/settings.js"></script>
     <!-- Root element -->
     <script src="static/smh_playerstation/main.js"></script>
