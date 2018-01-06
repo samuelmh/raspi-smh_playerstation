@@ -7,11 +7,17 @@ var songs_template = `
 				<div class="col-1">
 					<label class="col-form-label font-weight-bold">Search</label>
 				</div>
-				<div class="col-10">
-					<input name="query" class="form-control" v-model="searchQuery" />
+				<div class="col-8 form-inline">
+					<input name="query" class="col-11 form-control" v-model="searchQuery" />
+					<button v-if="searchQuery" type="button" class="btn btn-light" v-on:click="searchQuery=''"><i class="fa fa-times fa-fw"></i></button>
 				</div>
-				<div class="col-1">
-						<button type="button" class="btn btn-light" v-if="searchQuery" v-on:click="searchQuery=''"><i class="fa fa-times fa-fw"></i></button>
+
+				<div class="col-3">
+					<div v-if="searchQuery" >
+						<button type="button" class="btn btn-light" v-on:click="encoder_add_songs(filteredSongs)"><i class="fa fa-hdd-o fa-fw"></i></button>
+						<button type="button" class="btn btn-light" v-on:click="playlist_add_songs(filteredSongs)"><i class="fa fa-list fa-fw"></i></button>
+						<button type="button" class="btn btn-light" v-on:click="player_add_songs(filteredSongs)"><i class="fa fa-play-circle fa-fw"></i></button>
+					</div>
 				</div>
 			</div>
 		</form>
@@ -33,8 +39,9 @@ var songs_template = `
 					<td class="col-1">{{ entry["LENGTH_HMS"] }}</td>
 					<td class="col-5 small">{{ entry["PATH"] }}</td>
 					<td class="col-1">
-						<button type="button" class="btn btn-link" v-on:click="playlist_add_song(entry['PATH'])"><i class="fa fa-list fa-fw"></i></button>
-						<button type="button" class="btn btn-link" v-on:click="player_add_song(entry['PATH'])"><i class="fa fa-play-circle fa-fw"></i></button>
+						<button type="button" class="btn btn-link" v-on:click="encoder_add_songs([entry])"><i class="fa fa-hdd-o fa-fw"></i></button>
+						<button type="button" class="btn btn-link" v-on:click="playlist_add_songs([entry])"><i class="fa fa-list fa-fw"></i></button>
+						<button type="button" class="btn btn-link" v-on:click="player_add_songs([entry])"><i class="fa fa-play-circle fa-fw"></i></button>
 					</td>
 				</tr>
 			</tbody>
@@ -88,11 +95,21 @@ Vue.component('smh-playerstation-songs', {
 			this.sortKey = key
 			this.sortOrders[key] = this.sortOrders[key] * -1
 		},
-		playlist_add_song: function(song_id){
-			this.$emit('playlist_add_song', song_id);
+		extract_ids: function(songs){
+			return songs.map(
+				function(x) {
+					return(x['PATH'])
+				}
+			);
 		},
-		player_add_song: function(song_id){
-			this.$emit('player_add_songs', [song_id]);
+		playlist_add_songs: function(songs){
+			this.$emit('playlist_add_songs', this.extract_ids(songs));
+		},
+		encoder_add_songs: function(songs){
+			this.$emit('encoder_add_songs', this.extract_ids(songs));
+		},
+		player_add_songs: function(songs){
+			this.$emit('player_add_songs', this.extract_ids(songs));
 		}
 	}
 });

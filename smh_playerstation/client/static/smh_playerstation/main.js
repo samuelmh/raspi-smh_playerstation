@@ -168,8 +168,8 @@ var smh_playerstation = new Vue({
 		playlist_remove_song: function(song_index){
 			Vue.delete(this.playlists[this.playlist_selected_id], song_index);
 		},
-		playlist_add_song: function(song_id){
-			this.playlists[this.playlist_selected_id].push(song_id);
+		playlist_add_songs: function(song_ids){
+			this.playlists[this.playlist_selected_id] = this.playlists[this.playlist_selected_id].concat(song_ids);
 		},
 
 
