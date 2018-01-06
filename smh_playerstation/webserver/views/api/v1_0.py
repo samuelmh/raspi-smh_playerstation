@@ -66,7 +66,7 @@ class V1_0(object):
                 'methods': ['POST'],
             },
             '/player/action/<action>': {
-                'view_func': self.player_action_get,
+                'view_func': self.player_action_post,
                 'methods': ['POST'],
             },
             # Playlists
@@ -215,13 +215,13 @@ class V1_0(object):
             self.ps.player.set_list(files=song_ids)
         return(jsonify('OK'), status.OK)
 
-    def player_action_get(self, action):
+    def player_action_post(self, action):
         """Control the player.
         """
-        print(action)
         retval = (jsonify('OK'), status.OK)
         if action == "play":
-            self.ps.player.play()
+            position = request.json.get('position', None)
+            self.ps.player.play(position)
         elif action == "play_next":
             self.ps.player.play_next()
         elif action == "stop":

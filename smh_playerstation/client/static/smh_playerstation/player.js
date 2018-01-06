@@ -3,7 +3,7 @@ var player_template = `
 	<!-- PLAYER -->
 	<div class="btn-group" role="group">
 		<div v-if="player.playing_time==-1">
-			<button type="button" class="btn btn-light" v-on:click="player_action('play')"><i class="fa fa-play fa-fw"></i></button>
+			<button type="button" class="btn btn-light" v-on:click="player_action('play',-1)"><i class="fa fa-play fa-fw"></i></button>
 		</div>
 		<div v-else>
 			<button type="button" class="btn btn-light" v-on:click="player_action('stop')"><i class="fa fa-stop fa-fw"></i></button>
@@ -35,7 +35,7 @@ var player_template = `
 					</div>
 					<div class="col-2">
 						<button type="button" class="btn btn-link" v-on:click="player_remove_song(index)"><i class="fa fa-remove fa-fw"></i></button>
-						<button type="button" class="btn btn-link"><i class="fa fa-play-circle fa-fw"></i></button>
+						<button type="button" class="btn btn-link" v-on:click="player_action('play',index)"><i class="fa fa-play-circle fa-fw"></i></button>
 					</div>
 				</div>
 			</li>
@@ -52,8 +52,8 @@ Vue.component('smh-playerstation-player', {
 		player_remove_song: function (song_index){
 			this.$emit('player_remove_song', song_index);
 		},
-		player_action: function(action){
-			this.$emit('player_action', action);
+		player_action: function(action, position){
+			this.$emit('player_action', action, position);
 		},
 		player_mode: function(mode){
 			this.$emit('player_mode', mode);

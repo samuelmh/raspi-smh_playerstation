@@ -212,17 +212,23 @@ var smh_playerstation = new Vue({
 			this.player.playlist = this.player.playlist.concat(song_ids);
 			this.player_playlist_upsert();
 		},
-		player_action: function(action){
+		player_action: function(action, position){
 	    var self = this;
-	    axios.post(self.url_api+'/player/action/'+action)
-	      .then(function (response) {
-	        console.log("OK: player_action");
-					self.player_get();
-	      })
-	      .catch(function (error) {
-	        console.log("ERROR: player_action");
-	        console.log(error);
-	      });
+			var params = {}
+			if (position!=-1) {
+				params = {position: position};
+			}
+	    axios.post(
+				self.url_api+'/player/action/'+action,
+				params
+			).then(function (response) {
+        console.log("OK: player_action");
+				self.player_get();
+      })
+      .catch(function (error) {
+        console.log("ERROR: player_action");
+        console.log(error);
+      });
 		},
 		player_mode: function(mode){
 	    var self = this;

@@ -157,7 +157,7 @@ class Player(object):
     def play(self, position=None):
         """Play the current element in the playlist.
         """
-        if position and (0 <= position < len(self.playlist)):
+        if position!=None and (0 <= position < len(self.playlist)):
             self.playlist_id = position
             self.stop()
         if not self.is_playing:
