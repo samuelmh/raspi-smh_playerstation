@@ -243,11 +243,11 @@ var smh_playerstation = new Vue({
 		//==> OTHERS
 		//
 		to_encoder:function(){
-			$('#tabs a[href="#encoder"]').tab('show');  // See workers
+			$('#tabs a[href="#encoder"]').tab('show');  // See encoder
 		},
 		to_status: function(){
 			$('#tabs a[href="#settings"]').tab('show');  // See workers
-			setTimeout(self.status_get, 3000);
+			setTimeout(this.status_get, 3000);
 		},
 		update_data: function(){
 			smh_playerstation.songs_get();
@@ -280,7 +280,8 @@ var smh_playerstation = new Vue({
 	      .catch(function (error) {
 	        console.log("ERROR: status_get");
 	        console.log(error);
-					setTimeout(self.status_get, 3000);
+					setTimeout(self.status_get, 10000);
+					// Long Delay, with 0 queued items there could be a song still in the downloading process
 	      });
 		},
 },

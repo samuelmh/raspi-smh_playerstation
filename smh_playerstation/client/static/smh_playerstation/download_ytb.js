@@ -37,13 +37,13 @@ Vue.component('smh-playerstation-download_ytb', {
 	methods: {
 		download: function(){
 			var self = this;
-			console.log(self.path);
-			console.log(self.ytb_ids);
 	    axios.post(
 				self.url_api+'/songs/youtube/download',
 				{path:self.path, youtube_ids: self.ytb_ids}
 			).then(function (response) {
         console.log("OK: download_ytb");
+				self.path = "";
+				self.ytb_ids = "";
 				self.$emit('downloading');
       }).catch(function (error) {
         console.log("ERROR: download_ytb");
