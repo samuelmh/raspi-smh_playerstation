@@ -6,6 +6,7 @@ import os
 import random
 import shlex
 import subprocess
+import signal
 import threading
 import time
 
@@ -31,7 +32,13 @@ class CommandPlayer(threading.Thread):
     def run(self):
         """Thread method override.
         """
-        self.process = subprocess.Popen(shlex.split(self.command))
+        # From: https://stackoverflow.com/questions/4789837/how-to-terminate-a-python-subprocess-launched-with-shell-true
+        self.process = subprocess.Popen(
+            self.command,
+            stdout=subprocess.PIPE, 
+            shell=True,
+            preexec_fn=os.setsid
+        )
         self.process.wait()
         if self.process.returncode == 0:  # Process was not killed
             self.callback()
@@ -39,7 +46,7 @@ class CommandPlayer(threading.Thread):
     def stop(self):
         """Stop the command execution.
         """
-        self.process.kill()
+        os.killpg(os.getpgid(self.process.pid), signal.SIGTERM)
 
 
 class Player(object):
