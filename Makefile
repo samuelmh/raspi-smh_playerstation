@@ -33,9 +33,6 @@ help:
 #
 ### Install the project
 #
-test:
-	echo "PATH_DATA='$(PATH_DATA)/'"
-
 install: ## Create a development environment (virtualenv).
 	@echo "Create the environment in "$(PATH_PROJECT)
 	@virtualenv -p python3.5 $(PATH_VENV)
@@ -48,7 +45,8 @@ install: ## Create a development environment (virtualenv).
 	@ln -s $(PATH_LIBRARY) $(PATH_VENV)'/lib/python3.5/site-packages/'
 	# Create a local python config file pointing to the data directory
 	@mkdir -p -- $(PATH_DATA)
-	@echo "PATH_DATA='$(PATH_DATA)/'">$(PATH_LIBRARY)'/config_local.py'
+	@echo "PATH_PROJECT='$(PATH_PROJECT)/'">$(PATH_LIBRARY)'/config_local.py'
+	@echo "PATH_DATA='$(PATH_DATA)/'">>$(PATH_LIBRARY)'/config_local.py'
 	# Copy logging conf file
 	@ cp $(PATH_PROJECT)'/deploy/logging.conf' $(PATH_DATA)
 	@echo "Done"
