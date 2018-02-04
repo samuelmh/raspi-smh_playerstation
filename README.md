@@ -1,4 +1,6 @@
-# PLAYERSTATION
+# SMH_PLAYERSTATION
+
+
 
 ## Documentation
 * [Installation](doc/installation.md)

@@ -1,4 +1,4 @@
-# PLAYERSTATION > Configuration
+# SMH_PLAYERSTATION > Configuration
 
 
 ## Prerequisites
