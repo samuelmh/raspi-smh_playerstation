@@ -71,7 +71,7 @@ var settings_template = `
 					<input class="form-control" v-model="url_api" />
 			    <small id="emailHelp" class="form-text text-muted">Example: http://localhost:8000/api/v1.0</small>
 			  </div>
-			  <button class="btn btn-primary" v-on:click="url_api_set">Save</button>
+			  <button type="button" class="btn btn-primary" v-on:click="url_api_set">Save</button>
 			</form>
 	  </div>
 	</div>

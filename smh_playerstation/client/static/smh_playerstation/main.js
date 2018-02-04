@@ -262,6 +262,7 @@ var smh_playerstation = new Vue({
 		},
 		url_api_set: function(url_api){
 			this.url_api = url_api;
+			this.update_data();
 		},
 		status_get: function(){ //Update the workers status until queues==0
 	    var self = this;
