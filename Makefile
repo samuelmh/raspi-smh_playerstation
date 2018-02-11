@@ -13,7 +13,7 @@ LIBRARY = 'smh_playerstation'
 
 #Don't touch
 PATH_PROJECT = $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
-PATH_VENV = $(PATH_PROJECT)'/venv3.5'
+PATH_VENV = $(PATH_PROJECT)'/venv3.6'
 PATH_LIBRARY = $(PATH_PROJECT)'/'$(LIBRARY)
 PATH_DATA = $(PATH_PROJECT)/data
 
@@ -35,14 +35,14 @@ help:
 #
 install: ## Create a development environment (virtualenv).
 	@echo "Create the environment in "$(PATH_PROJECT)
-	@virtualenv -p python3.5 $(PATH_VENV)
+	@virtualenv -p python3.6 $(PATH_VENV)
 	@echo "Install requirements"
 	$(PATH_VENV)'/bin/pip' install -r $(PATH_PROJECT)'/deploy/requirements.txt'
 	@echo "Create symbolic links"
 	# Link to project
 	@ln -s $(PATH_PROJECT) $(PATH_VENV)'/'
 	# Link code to project library so it is in the PYTHONPATH
-	@ln -s $(PATH_LIBRARY) $(PATH_VENV)'/lib/python3.5/site-packages/'
+	@ln -s $(PATH_LIBRARY) $(PATH_VENV)'/lib/python3.6/site-packages/'
 	# Create a local python config file pointing to the data directory
 	@mkdir -p -- $(PATH_DATA)
 	@echo "PATH_PROJECT='$(PATH_PROJECT)/'">$(PATH_LIBRARY)'/config_local.py'
@@ -58,7 +58,7 @@ install: ## Create a development environment (virtualenv).
 #
 
 run-webserver: ## Start the HTTP microservice (development).
-	$(PATH_VENV)'/bin/python3.5' -m smh_playerstation.webserver.webserver
+	$(PATH_VENV)'/bin/python3.6' -m smh_playerstation.webserver.webserver
 
 
 #

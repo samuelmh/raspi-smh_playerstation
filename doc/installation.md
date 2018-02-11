@@ -38,7 +38,7 @@ network={
 ## System packages
 ```bash
 sudo apt-get update
-sudo apt-get install python3.5 virtualenv git ffmpeg
+sudo apt-get install python3.6 virtualenv git ffmpeg
 ```
 
 ## Install the project
