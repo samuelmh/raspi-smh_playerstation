@@ -2,6 +2,7 @@
 
 
 import math
+import shlex
 import subprocess
 
 
@@ -35,7 +36,7 @@ def analyze(song_path, song_abspath):
 def get_media_length(song_abspath):
     try:
         result = subprocess.Popen(
-            'ffprobe -i "{}" -show_entries format=duration -v quiet -of csv="p=0"'.format(song_abspath),
+            'ffprobe -i {} -show_entries format=duration -v quiet -of csv="p=0"'.format(shlex.quote(song_abspath)),
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             shell=True
