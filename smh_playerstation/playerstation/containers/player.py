@@ -23,6 +23,7 @@ class CommandPlayer(threading.Thread):
         callback: function
             Function to call after the command is successfully executed.
         """
+        self.logger = logging.getLogger(__name__)
         self.command = command
         self.callback = callback
         self.process = None
@@ -33,9 +34,10 @@ class CommandPlayer(threading.Thread):
         """Thread method override.
         """
         # From: https://stackoverflow.com/questions/4789837/how-to-terminate-a-python-subprocess-launched-with-shell-true
+        self.logger.debug("command: {}".format(self.command))
         self.process = subprocess.Popen(
             self.command,
-            stdout=subprocess.PIPE, 
+            stdout=subprocess.PIPE,
             shell=True,
             preexec_fn=os.setsid
         )
@@ -173,7 +175,9 @@ class Player(object):
             self.is_playing = True
             self.thread = CommandPlayer(
                 command=self.player_command.format(
-                    file=os.path.join(self.path_songs, self.playlist[self.playlist_id])
+                    file=shlex.quote(
+                        os.path.join(self.path_songs, self.playlist[self.playlist_id])
+                    )
                 ),
                 callback=self._callback
             )
