@@ -52,11 +52,11 @@ def encode(song_abspath, file_out_abspath, bitrate=245, mono=False):
     retval = True
     try:
         subprocess.Popen(
-            'ffmpeg -i "{song_in}" {quality} {mono} "{song_out}"'.format(
-                song_in=song_abspath,
+            'ffmpeg -i {song_in} {quality} {mono} {song_out}'.format(
+                song_in=shlex.quote(song_abspath),
                 quality="-q:a {0}".format(BITRATES.get(bitrate, "0")),
                 mono="-ac 1" if mono else "",
-                song_out=file_out_abspath,
+                song_out=shlex.quote(file_out_abspath),
             ),
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
