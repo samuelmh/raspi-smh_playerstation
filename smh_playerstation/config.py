@@ -24,6 +24,9 @@ PATH_SONGS = PATH_DATA + '/songs'
 PATH_SONGS_ENCODED = PATH_DATA + '/encoded'
 PATH_SONGS_YOUTUBE = PATH_SONGS + '/youtube'
 
+# Client
+PATH_CLIENT = PATH_PROJECT+'/client'
+
 
 #
 ### Music player
@@ -38,7 +41,7 @@ PLAYER_COMMAND = {
 
 
 #
-### Web server
+### Web server (Flask) config params
 #
 APP_NAME = 'SMH_PLAYERSTATION'
 DEBUG = False

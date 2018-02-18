@@ -12,6 +12,7 @@ from ..playerstation.playerstation import PlayerStation
 from ..import config
 
 from . views.api.v1_0 import V1_0
+from . views.client import Client  # client
 
 
 def init_playerstation():
@@ -25,7 +26,10 @@ def init_playerstation():
 
 
 def get_app(ps):
-    app = Flask(config.APP_NAME)
+    app = Flask(
+        config.APP_NAME,
+        static_folder=config.PATH_CLIENT+'/static'  # client
+    )
     app.config.from_object(config)
     CORS(app)
     try:
@@ -33,10 +37,16 @@ def get_app(ps):
     except:
         pass
     ps.start()
+    # Initialize views
     V1_0(
         app=app,
         url_prefix='/api/v1.0',
         playerstation=ps
+    )
+    Client(  # client
+        app=app,
+        url_prefix='/',
+        path_client=config.PATH_CLIENT
     )
     return(app)
 
