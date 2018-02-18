@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="static/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+
+  </head>
+  <body>
+    <h1>SMH Player Station</h1>
+
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist" id="tabs">
+      <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="#player" role="tab"><i class="fa fa-play-circle fa-fw"></i> Player</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#playlists" role="tab"><i class="fa fa-list fa-fw"></i> Playlists</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#songs" role="tab"><i class="fa fa-music fa-fw"></i> Songs</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#ytb" role="tab"><i class="fa fa-youtube fa-fw"></i> Download</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#encoder" role="tab"><i class="fa fa-hdd-o fa-fw"></i> Encoder</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#settings" role="tab"><i class="fa fa-cogs fa-fw"></i> Settings</a>
+      </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content" id="smh_playerstation">
+
+      <!-- PLAYER -->
+      <div class="tab-pane active" role="tabpanel" id="player">
+      	<br/>
+        <smh-playerstation-player
+          v-bind:player="player"
+          v-on:player_remove_song="player_remove_song"
+          v-on:player_action="player_action"
+          v-on:player_mode="player_mode"
+          v-on:drag_update="player_playlist_upsert"
+        >
+        </smh-playerstation-player>
+
+      </div>
+
+      <!-- PLAYLISTS -->
+      <div class="tab-pane" role="tabpanel" id="playlists" >
+      	<br/>
+        <smh-playerstation-playlists
+          v-bind:playlists="playlists"
+          v-bind:playlist_selected_id="playlist_selected_id"
+          v-on:playlist_set_selected="playlist_set_selected"
+          v-on:playlist_upsert="playlist_upsert"
+          v-on:playlist_delete="playlist_delete"
+          v-on:playlist_remove_song="playlist_remove_song"
+          v-on:player_add_songs="player_add_songs"
+          v-on:encoder_add_songs="encoder_add_songs"
+          v-on:encoder_set_path="encoder_set_path"
+        >
+        </smh-playerstation-playlists>
+      </div>
+
+      <!-- SONGS -->
+      <div class="tab-pane" role="tabpanel" id="songs">
+      	<br/>
+        <smh-playerstation-songs
+          v-bind:songs="songs"
+          v-on:encoder_add_songs="encoder_add_songs"
+          v-on:playlist_add_songs="playlist_add_songs"
+          v-on:player_add_songs="player_add_songs"
+        >
+        </smh-playerstation-songs>
+      </div>
+
+      <!-- YOUTUBE DOWNLOADER -->
+      <div class="tab-pane" role="tabpanel" id="ytb">
+      	<br/>
+        <smh-playerstation-download_ytb
+          v-bind:url_api="url_api"
+          v-on:downloading="to_status"
+        >
+        </smh-playerstation-download_ytb>
+      </div>
+
+      <!-- ENCODER -->
+      <div class="tab-pane" role="tabpanel" id="encoder">
+      	<br/>
+        <smh-playerstation-encoder
+          v-bind:song_ids="encoder_songs"
+          v-bind:path="encoder_path"
+          v-on:add_songs="encoder_add_songs"
+          v-on:remove_song="encoder_remove_song"
+          v-on:encoder_encode="encoder_encode"
+        >
+      </smh-playerstation-encoder>
+      </div>
+
+      <!-- SETTTINGS -->
+      <div class="tab-pane" role="tabpanel" id="settings">
+      	<br/>
+        <smh-playerstation-settings
+          v-bind:status="status"
+          v-bind:url_api="url_api"
+          v-on:songs_scan="songs_scan"
+          v-on:songs_rescan="songs_rescan"
+          v-on:url_api_set="url_api_set"
+        >
+        </smh-playerstation-settings>
+      </div>
+
+    </div>
+
+    <!-- Bootstrap -->
+    <script src="static/jquery/jquery-3.2.1.slim.min.js"></script>
+    <script src="static/popper.js/1.11.0/popper.min.js"></script>
+    <script src="static/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+
+    <!-- Vue -->
+    <script src="static/axios/axios-0.16.2.min.js"></script>
+    <script src="static/vue/vue-2.4.4.min.js"></script>
+    <script src="static/vue/Sortable-1.6.0.min.js"></script>
+    <script src="static/vue/vuedraggable-2.14.1.min.js"></script>
+
+    <!-- Custom -->
+    <script src="static/smh_playerstation/player.js"></script>
+    <script src="static/smh_playerstation/playlists.js"></script>
+    <script src="static/smh_playerstation/songs.js"></script>
+    <script src="static/smh_playerstation/download_ytb.js"></script>
+    <script src="static/smh_playerstation/encoder.js"></script>
+    <script src="static/smh_playerstation/settings.js"></script>
+    <!-- Root element -->
+    <script src="static/smh_playerstation/main.js"></script>
+
+
+    <script>
+      smh_playerstation.status_get();
+    </script>
+
+
+  </body>
+</html>
