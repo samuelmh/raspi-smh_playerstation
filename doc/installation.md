@@ -1,15 +1,61 @@
 # SMH_PLAYERSTATION > Installation
 
-## Download project
+## Table of Contents
+* [Docker running](#docker)
+* [Manual installation (Developers & Raspberry Pi)](#manual)
+
+## Docker running <a name="docker"></a>
+This is the prefered method if you just want to run the program. If you use Windows check out  [Docker for Windows](https://docs.docker.com/docker-for-windows/install/).
+
+I have built an image
+
+### Directories
+These are the directories where the songs will go.
+* `smh_playerstation` will be the directory for our project
+* `smh_playerstation/songs` is where you put your songs. The program will index all the songs under this path.
+* `smh_playerstation/songs/youtube` will have the songs downloaded from Youtube.
+* `smh_playerstation/songs_encoded` will have all the encoded songs. For example when a youtube song is encoded into a .mp3 file.
+
+Create the previous directories by hand or just run:
+```bash
+mkdir -p ~/smh_playerstation/songs ~/smh_playerstation/songs_encoded
+```
+
+### Run it!
+Run a docker container to start the server. This will download the lastest stable version into your system.
+
+```bash
+docker run -v ~/smh_playerstation/songs:/songs -v ~/smh_playerstation/songs_encoded:/songs_encoded -p 8000:8000 --user `id -u`:`getent group audio | awk -F: '{printf "%d", $3}'` --device /dev/snd -d smh_playerstation
+```
+
+Then open a web browser, go to http://localhost:8000 and enjoy.
+
+### Building the image
+If you don't trust the previous image I created, you can build your own from the source [Dockerfile](https://github.com/samuelmh/raspi-smh_playerstation/blob/master/docker/PC/Dockerfile).
+
+To build the image:
+```bash
+docker build https://github.com/samuelmh/raspi-smh_playerstation.git#master:docker/PC -t smh_playerstation
+```
+And you can run it with.
+```bash
+docker run -v ~/smh_playerstation/songs:/songs -v ~/smh_playerstation/songs_encoded:/songs_encoded -p 8000:8000 --user `id -u`:`getent group audio | awk -F: '{printf "%d", $3}'` --device /dev/snd -d smh_playerstation
+```
+
+
+## Manual Installation <a name="manual"></a>
+
+
+### Download the project
 ```bash
 git clone https://github.com/samuelmh/raspi-smh_playerstation.git
 ```
 
 
-## Raspberry Pi
+### Raspberry Pi
 *Note: tested on* `2017-11-29-raspbian-stretch-lite.img`
 
-### How to install raspbian OS
+#### How to install raspbian OS
 From: https://www.raspberrypi.org/downloads/raspbian/
 1. Download the OS https://downloads.raspberrypi.org/raspbian_lite_latest
 1. Build the SD card
@@ -35,13 +81,13 @@ network={
 1. Plug the SD card into the raspberry pi and start.
 
 
-## System packages
+#### System packages
 ```bash
 sudo apt-get update
 sudo apt-get install python3.6 virtualenv git ffmpeg
 ```
 
-## Install the project
+#### Install the project
 ```bash
 cd ~
 git clone https://github.com/samuelmh/raspi-smh_playerstation.git
