@@ -21,23 +21,17 @@ RUN \
   make install
 
 RUN \
-  # Output project directories
-  cd "/opt/raspi-smh_playerstation" && \
-  mkdir data/songs && \
-  mkdir data/encoded && \
   # easy-name volumes
-  ln -s /opt/raspi-smh_playerstation/data/songs /songs && \
-  ln -s /opt/raspi-smh_playerstation/data/encoded /songs_encoded && \
+  ln -s /opt/raspi-smh_playerstation/data /data && \
   # Permissions
   chmod -R 755 /opt && \
-  chmod -R 777 /opt/raspi-smh_playerstation/data
+  chmod -R 666 /opt/raspi-smh_playerstation/data
 
 
 WORKDIR /opt/raspi-smh_playerstation
-VOLUME ["/songs"]
-VOLUME ["/songs_encoded"]
+VOLUME ["/data"]
 CMD make run-webserver
 EXPOSE 8000
 
 # SAMPLE RUN:
-# docker run -v ~/smh_playerstation/songs:/songs -v ~/smh_playerstation/songs_encoded:/songs_encoded -p 8000:8000 --user `id -u`:`getent group audio | awk -F: '{printf "%d", $3}'` --device /dev/snd -d smh_playerstation
+# docker run -v ~/smh_playerstation:/data -p 8000:8000 --user `id -u`:`getent group audio | awk -F: '{printf "%d", $3}'` --device /dev/snd -d smh_playerstation
