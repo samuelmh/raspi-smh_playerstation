@@ -8,14 +8,15 @@
 #
 ### PATHS
 #
-LIBRARY = 'smh_playerstation'
+LIBRARY = smh_playerstation
 
 
 #Don't touch
 PATH_PROJECT = $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
-PATH_VENV = $(PATH_PROJECT)'/venv3.6'
-PATH_LIBRARY = $(PATH_PROJECT)'/'$(LIBRARY)
+PATH_VENV = $(PATH_PROJECT)/venv3.6
+PATH_LIBRARY = $(PATH_PROJECT)/$(LIBRARY)
 PATH_DATA = $(PATH_PROJECT)/data
+PATH_CONFIG = $(PATH_LIBRARY)/config
 
 
 #
@@ -43,12 +44,15 @@ install: ## Create a development environment (virtualenv).
 	@ln -s $(PATH_PROJECT) $(PATH_VENV)'/'
 	# Link code to project library so it is in the PYTHONPATH
 	@ln -s $(PATH_LIBRARY) $(PATH_VENV)'/lib/python3.6/site-packages/'
-	# Create a local python config file pointing to the data directory
+	# CONFIGURATION
+	# Logging
+	@ cp $(PATH_PROJECT)'/deploy/logging.conf' $(PATH_CONFIG)
+	# Local configuration
+	@echo "PATH_PROJECT='$(PATH_PROJECT)/'">$(PATH_CONFIG)'/config_local.py'
+	@echo "PATH_DATA='$(PATH_DATA)/'">>$(PATH_CONFIG)'/config_local.py'
+	@echo "PATH_CONFIG='$(PATH_CONFIG)/'">>$(PATH_CONFIG)'/config_local.py'
+	# Data directory
 	@mkdir -p -- $(PATH_DATA)
-	@echo "PATH_PROJECT='$(PATH_PROJECT)/'">$(PATH_LIBRARY)'/config_local.py'
-	@echo "PATH_DATA='$(PATH_DATA)/'">>$(PATH_LIBRARY)'/config_local.py'
-	# Copy logging conf file
-	@ cp $(PATH_PROJECT)'/deploy/logging.conf' $(PATH_DATA)
 	@echo "Done"
 
 
