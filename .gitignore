@@ -1,7 +1,7 @@
 __pycache__
 *.pyc
 data
-venv3.6
+venv
 smh_playerstation/config/config_local.py
 smh_playerstation/config/logging.conf
 *test*

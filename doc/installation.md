@@ -84,7 +84,7 @@ network={
 #### System packages
 ```bash
 sudo apt-get update
-sudo apt-get install python3.6 virtualenv git ffmpeg
+sudo apt-get install python3.5 virtualenv git ffmpeg
 ```
 
 #### Install the project
@@ -92,11 +92,11 @@ sudo apt-get install python3.6 virtualenv git ffmpeg
 cd ~
 git clone https://github.com/samuelmh/raspi-smh_playerstation.git
 cd raspi-smh_playerstation
-make install
+make install PYTHON_VERSION=3.5
 ```
 
 At this point you should be able to run:
 ```bash
 make run-webserver
 ```
-And have a working server on the port 8000.
+And have a working server on the URL http://localhost:8000 .
