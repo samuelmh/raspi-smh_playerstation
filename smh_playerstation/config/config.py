@@ -36,7 +36,10 @@ PLAYER = 'ffplay'
 # Command to be executed by the player
 PLAYER_COMMAND = {
     'ffplay': 'ffplay -loglevel quiet -nodisp -autoexit {file}',
-    'pifm': 'ffmpeg -i {{file}}  -f s16le -ar 22.05k -ac 1 -filter "volume=2" - | sudo "{}" - 103.3'.format(PATH_PROJECT+'/extra/piFM/pifm')
+    'pifm': 'ffmpeg -i {{file}}  -f s16le -ar 22.05k -ac 1 -filter "volume=2" - | sudo "{pifm}" - {mhz}'.format(
+        pifm=PATH_PROJECT+'/extra/piFM/pifm',  # path to the radio streamer exec
+        mhz=103.3  # broadcasting frequency
+    )
 }[PLAYER]
 
 
