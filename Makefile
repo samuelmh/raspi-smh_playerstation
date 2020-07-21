@@ -9,7 +9,7 @@
 ### PRECONFIG
 #
 
-PYTHON_VERSION := 3.6
+PYTHON_VERSION := 3.8
 
 #
 ### PATHS
